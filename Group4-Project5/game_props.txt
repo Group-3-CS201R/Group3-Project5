@@ -1,0 +1,40 @@
+Action GO
+Property Mediterranean_Avenue BROWN 60 2 10 30 90 160 250 20 50 50
+Action COMMUNITY_CHEST
+Property Baltic_Avenue BROWN 60 4 20 60 180 320 450 30 50 50
+Action INCOME_TAX
+Railroad Reading_Railroad 200 25 50 100 200 100
+Property Oriental_Avenue BLUE 100 6 30 90 270 400 550 50 50 50
+Action CHANCE
+Property Vermont_Avenue BLUE 100 6 30 90 270 400 550 50 50 50
+Property Connecticut_Avenue BLUE 120 8 40 100 300 450 600 60 50 50
+Action JAIL
+Property St._Charles_Place PINK 140 10 50 150 450 625 750 70 100 100
+Utility Electric_Company 150 75
+Property States_Avenue PINK 140 10 50 150 450 625 750 70 100 100
+Property Virginia_Avenue PINK 160 12 60 180 500 700 900 80 100 100
+Railroad Pennsylvania_Railroad 200 25 50 100 200 100
+Property St._James_Place ORANGE 180 14 70 200 550 750 950 90 100 100
+Action COMMUNITY_CHEST
+Property Tennessee_Avenue ORANGE 180 14 70 200 550 750 950 90 100 100
+Property New_York_Avenue ORANGE 200 16 80 220 600 800 1000 100 100 100
+Action FREE_PARKING
+Property Kentucky_Avenue RED 220 18 90 250 700 875 1050 110 150 150
+Action CHANCE
+Property Indiana_Avenue RED 220 18 90 250 700 875 1050 110 150 150
+Property Illinois_Avenue RED 240 20 100 300 750 925 1100 120 150 150
+Railroad B&O_Railroad 200 25 50 100 200 100
+Property Atlantic_Avenue YELLOW 260 22 110 330 800 975 1150 130 150 150
+Property Ventnor_Avenue YELLOW 260 22 110 330 800 975 1150 130 150 150
+Utility Water_Works 150 75
+Property Marvin_Gardens YELLOW 280 24 120 360 850 1025 1200 140 150 150
+Action GO_TO_JAIL
+Property Pacific_Avenue GREEN 300 26 130 390 900 1100 1275 150 200 200
+Property North_Carolina_Avenue GREEN 300 26 130 390 900 1100 1275 150 200 200
+Action COMMUNITY_CHEST
+Property Pennsylvania_Avenue GREEN 320 28 150 450 1000 1200 1400 160 200 200
+Railroad Short_Line_Railroad 200 25 50 100 200 100
+Action CHANCE
+Property Park_Place NAVY 350 35 175 500 1100 1300 1500 175 200 200
+Action LUXURY_TAX
+Property Boardwalk NAVY 400 50 200 600 1400 1700 2000 200 200 200

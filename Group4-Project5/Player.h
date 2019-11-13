@@ -22,6 +22,7 @@ public:
 	bool IsInJail();
 	void AddToColorMap(Property* property);
 	void PurchaseHouse(Property& property);
+	void PurchaseHotel(Property& property);
 	void PayRent(int toPay);
 	void CollectRent(int toCollect);
 	void PurchaseProperty(int propCost, int position);

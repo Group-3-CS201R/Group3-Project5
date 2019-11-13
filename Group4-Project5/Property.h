@@ -25,7 +25,7 @@ public:
 	void AddHouse();
 	int GetHouseCost();
 	int GetPosition();
-	int GetMortgage();
+	int GetHotelCost();
 private:
 	int position;
 	int numHouses;

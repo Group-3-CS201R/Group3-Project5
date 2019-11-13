@@ -271,7 +271,7 @@ void GameLogic::PrintPropsOwned(vector<int> positions) {
 	cout << endl << "You own the following properties:" << endl << endl;
 	for (int i = 0; i < positions.size(); ++i) {
 		if (properties.find(positions.at(i)) != properties.end()) {
-			cout << properties[positions.at(i)].GetName() << "\t\tPosition: " << properties[positions.at(i)].GetPosition() <<  "\t\tColor: " << properties[positions.at(i)].GetColor() << endl;
+			cout << properties[positions.at(i)].GetName() << "\tPosition: " << properties[positions.at(i)].GetPosition() <<  "\tColor: " << properties[positions.at(i)].GetColor() << "\t# houses: " << properties[positions.at(i)].GetNumHouses() << endl;
 		}
 		else if (railroads.find(positions.at(i)) != railroads.end()) {
 			cout << railroads[positions.at(i)].GetName() << "\t\tType: Railroad" << endl;

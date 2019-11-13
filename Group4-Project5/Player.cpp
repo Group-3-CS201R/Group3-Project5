@@ -112,11 +112,33 @@ void Player::SetPosition(int position) {
 	playerPosition = position;
 }
 
-// Needs thorough testing
+void Player::PurchaseHotel(Property& property) {
+	string userInp = "n";
+	while (true) {
+		cout << "You already own 4 houses on this property. Would you like to purchase a hotel? Cost: $" << property.GetHotelCost() << endl;
+		cout << "Press y to purchase and n to not purchase." << endl;
+		getline(cin, userInp);
+		if (userInp == "y" || userInp == "Y") {
+			property.AddHouse();
+			break;
+		}
+		else if (userInp == "n" || userInp == "N") {
+			break;
+		}
+		else {
+			cout << "Invalid input. You must enter either y or n." << endl << endl;
+		}
+	}
+}
+
 void Player::PurchaseHouse(Property& property) {
-	// FIXME: Call purchase hotel function
+	if (property.GetNumHouses() == 5) {
+		cout << "You already own a hotel here. You can no longer build on this property." << endl << endl;
+		return;
+	}
 	if (property.GetNumHouses() == 4) {
-		
+		PurchaseHotel(property);
+		return;
 	}
 	int houseNum1;
 	int houseNum2;
@@ -170,7 +192,7 @@ void Player::PurchaseHouse(Property& property) {
 		}
 	}
 	else {
-		cout << "You must own all of the properties of a color to purchase a house." << endl;
+		cout << "You must own all of the properties of a color to purchase a house." << endl << endl;
 	}
 }
 

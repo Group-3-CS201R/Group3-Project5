@@ -57,16 +57,15 @@ int Property::GetNumHouses() {
 
 //FIXME: Should use number of houses to decide how much rent. Use a map the maps <color, housesOwned>
 int Property::GetRent() {
-	if (!hotelIsOwned) {
 		return rents.at(numHouses);
-	}
-	else {
-		return rents.at(5);
-	}
 }
 
 int Property::GetHouseCost() {
 	return houseCost;
+}
+
+int Property::GetHotelCost() {
+	return hotelCost;
 }
 
 void Property::AddHouse() {

@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "Player.h"
+#include "Property.h"
 
 using namespace std;
 
@@ -11,14 +13,15 @@ Player::Player() {}
 Player::Player(string name, int num) : playerName(name), playerNum(num), netWorth(1500), playerPosition(1),
 inJail(false), rollsInJail(0), numRailRoads(0), playerDoubles(0), numUtils(0)
 {
-	numOfColor.insert({ "PINK", 0 });
-	numOfColor.insert({ "ORANGE", 0 });
-	numOfColor.insert({ "RED", 0 });
-	numOfColor.insert({ "YELLOW", 0 });
-	numOfColor.insert({ "GREEN", 0 });
-	numOfColor.insert({ "NAVY", 0 });
-	numOfColor.insert({ "PURPLE", 0 });
-	numOfColor.insert({ "BLUE", 0 });
+	colorMap.insert({ "PINK", vector<Property*>()});
+	colorMap.insert({ "ORANGE", vector<Property*>() });
+	colorMap.insert({ "RED", vector<Property*>() });
+	colorMap.insert({ "YELLOW", vector<Property*>() });
+	colorMap.insert({ "GREEN", vector<Property*>() });
+	colorMap.insert({ "NAVY", vector<Property*>() });
+	colorMap.insert({ "PURPLE", vector<Property*>() });
+	colorMap.insert({ "BLUE", vector<Property*>() });
+	colorMap.insert({ "BROWN", vector<Property*>() });
 }
 
 // textual output of player info. to-be deleted if/when GUI is created
@@ -97,8 +100,8 @@ void Player::AddRailroad() {
 	numRailRoads++;
 }
 
-void Player::AddToColorMap(string colorToAdd) {
-	numOfColor[colorToAdd]++;
+void Player::AddToColorMap(Property* property) {
+	colorMap[property->GetColor()].push_back(property);
 }
 
 int Player::GetNumRailroads() {
@@ -109,28 +112,65 @@ void Player::SetPosition(int position) {
 	playerPosition = position;
 }
 
-bool Player::CanPurchaseHouse(string colorToPurchase) {
-	if (colorToPurchase == "PINK" && numOfColor[colorToPurchase] == 3) {
-		return true;
-	} else if (colorToPurchase == "ORANGE" && numOfColor[colorToPurchase] == 3) {
-		return true;
-	} else if (colorToPurchase == "RED" && numOfColor[colorToPurchase] == 3) {
-		return true;
-	} else if (colorToPurchase == "YELLOW" && numOfColor[colorToPurchase] == 3) {
-		return true;
-	} else if (colorToPurchase == "GREEN" && numOfColor[colorToPurchase] == 3) {
-		return true;
-	} else if (colorToPurchase == "PINK" && numOfColor[colorToPurchase] == 3) {
-		return true;
-	} else if (colorToPurchase == "NAVY" && numOfColor[colorToPurchase] == 2) {
-		return true;
-	} else if (colorToPurchase == "PURPLE" && numOfColor[colorToPurchase] == 2) {
-		return true;
-	} else if (colorToPurchase == "BLUE" && numOfColor[colorToPurchase] == 3) {
-		return true;
+// Needs thorough testing
+void Player::PurchaseHouse(Property& property) {
+	// FIXME: Call purchase hotel function
+	if (property.GetNumHouses() == 4) {
+		
+	}
+	int houseNum1;
+	int houseNum2;
+	int propNum = property.GetNumHouses();
+	string color = property.GetColor();
+	vector<Property*> colorProps = colorMap[color];
+	// Check if player owns the minimum needed properties to purchase house for the color
+	if ((color == "PINK" || color == "ORANGE" || color == "RED" || color == "YELLOW" || color == "GREEN" || color == "BLUE") && colorMap[color].size() == 3) {
+		if (property.GetName() == colorProps.at(0)->GetName()) {
+			houseNum1 = colorProps.at(1)->GetNumHouses();
+			houseNum2 = colorProps.at(2)->GetNumHouses();
+		}
+		else if (property.GetName() == colorProps.at(1)->GetName()) {
+			houseNum1 = colorProps.at(0)->GetNumHouses();
+			houseNum2 = colorProps.at(2)->GetNumHouses();
+		}
+		else {
+			houseNum1 = colorProps.at(0)->GetNumHouses();
+			houseNum2 = colorProps.at(1)->GetNumHouses();
+		}
+		// Needs to check if the passed property has the ability to have a house purchased. Use the fact that properties must all be sigma = 1 of each other
+		if ((propNum == houseNum1 && propNum == houseNum2) || (abs((propNum + 1) - houseNum1) <= 1 && abs((propNum + 1) - houseNum2) <= 1)) {
+			if (netWorth < property.GetHouseCost()) {
+				cout << "You don't have enough money to purchase this house!" << endl; 
+			}
+			else {
+				netWorth -= property.GetHouseCost();
+				property.AddHouse();
+			}
+		}
+		else {
+			cout << "You must buy houses evenly. Purchase a house on aother property(or properties) of this color to purchase a house on this space." << endl;
+		}
+	}
+	// Check if player owns the minimum needs properties to purchase house for the color
+	else if ((color == "NAVY" || color == "PURPLE" || color == "BROWN") && colorMap[color].size() == 2) {
+		houseNum1 = colorProps.at(0)->GetNumHouses();
+		houseNum2 = colorProps.at(1)->GetNumHouses();
+		// Needs to check if the passed property has the ability to have a house purchased. Use the fact that properties must all be sigma = 1 of each other
+		if ((abs(propNum - houseNum1) <= 1) && (abs(propNum - houseNum2) <= 1)) {
+			if (netWorth > property.GetHouseCost()) {
+				cout << "You don't have enough money to purchase this house!" << endl;
+			}
+			else {
+				netWorth -= property.GetHouseCost();
+				property.AddHouse();
+			}
+		}
+		else {
+			cout << "You must buy houses evenly. Purchase a house on aother property(or properties) of this color to purchase a house on this space." << endl;
+		}
 	}
 	else {
-		return false;
+		cout << "You must own all of the properties of a color to purchase a house." << endl;
 	}
 }
 

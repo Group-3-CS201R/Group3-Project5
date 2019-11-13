@@ -30,6 +30,8 @@ public:
 	void FillPlayersVect();
 	void PrintPropsOwned(vector<int> positions);
 	void BankruptcyHandler(vector<int> positions);
+	void PurchaseHouseHotelSequence(vector<int> positions);
+	bool ValidPosition(vector<int> positions, int position);
 private:
 	Dice dice1;
 	Dice dice2;

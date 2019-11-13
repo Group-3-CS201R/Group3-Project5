@@ -41,12 +41,15 @@ void GameLogic::PlayGame() {
 			JailSequence();
 			continue;
 		}
-		cout << endl << "Player: " << (currentTurn + 1) << "\nPress p to print owned properties or anything else to roll. -> "; // stalls game until user is ready to roll
+		cout << endl << "Player: " << (currentTurn + 1) << "\nPress p to print owned properties, h to purchase house/hotel, and anything else to roll. -> "; // stalls game until user is ready to roll
 		cin >> stallyBoi;
 		cin.ignore();
 		if (stallyBoi == "P" || stallyBoi == "p") {
 			PrintPropsOwned(players.at(currentTurn).GetVect());
 			continue;
+		}
+		else if (stallyBoi == "H" || stallyBoi == "h") {
+			PurchaseHouseHotelSequence(players.at(currentTurn).GetVect());
 		}
 		dice1.RollDice();
 		dice2.RollDice();
@@ -161,11 +164,11 @@ void GameLogic::PropertySequence(int position) {
 	}
 	else {
 		properties[position].PrintDescription();
-		cout << endl << "Would you like to purchase this railroad? (y/n) -> ";
+		cout << endl << "Would you like to purchase this property? (y/n) -> ";
 		cin >> userResponse;
 		while (userResponse != "y" && userResponse != "Y" && userResponse != "n" && userResponse != "N") {
 			cout << "Please give a valid response (y/n)." << endl;
-			cout << endl << "Would you like to purchase this railroad? (y/n) -> ";
+			cout << endl << "Would you like to purchase this property? (y/n) -> ";
 			cin >> userResponse;
 		}
 		if (userResponse == "y" || userResponse == "Y") {
@@ -173,6 +176,7 @@ void GameLogic::PropertySequence(int position) {
 			if (players.at(currentTurn).GetNetWorth() >= properties[position].GetCost()) {
 				players.at(currentTurn).PurchaseProperty(properties[position].GetCost(), position);
 				properties[position].SetOwnedBy(currentTurn);
+				players.at(currentTurn).AddToColorMap(&properties[position]);
 			}
 			else { cout << "Sorry, you don't have enough money to purchase this property." << endl; }
 		}
@@ -213,7 +217,7 @@ void GameLogic::UtilitySequence(int position, int roll) {
 void GameLogic::ActionSequence(int position) {
 	actions[position].PrintDescription();
 	if (actions[position].GetName() == "GO_TO_JAIL") {
-		players.at(currentTurn).MovePosition(jailLocation); // moves player to jail
+		players.at(currentTurn).SetPosition(jailLocation); // moves player to jail
 		players.at(currentTurn).GoToJail(); // changes bool in class
 	}
 	else if (actions[position].GetName() == "INCOME_TAX") {
@@ -267,13 +271,13 @@ void GameLogic::PrintPropsOwned(vector<int> positions) {
 	cout << endl << "You own the following properties:" << endl << endl;
 	for (int i = 0; i < positions.size(); ++i) {
 		if (properties.find(positions.at(i)) != properties.end()) {
-			cout << properties[positions.at(i)].GetName() << endl;
+			cout << properties[positions.at(i)].GetName() << "\t\tPosition: " << properties[positions.at(i)].GetPosition() <<  "\t\tColor: " << properties[positions.at(i)].GetColor() << endl;
 		}
 		else if (railroads.find(positions.at(i)) != railroads.end()) {
-			cout << railroads[positions.at(i)].GetName() << endl;
+			cout << railroads[positions.at(i)].GetName() << "\t\tType: Railroad" << endl;
 		}
 		else if (utilities.find(positions.at(i)) != utilities.end()) {
-			cout << utilities[positions.at(i)].GetName() << endl;
+			cout << utilities[positions.at(i)].GetName() << "\t\tType: Utility" << endl;
 		}
 	}
 }
@@ -290,6 +294,47 @@ void GameLogic::BankruptcyHandler(vector<int> positions) {
 			utilities[i].ReleaseProp();
 		}
 	}
+}
+
+void GameLogic::PurchaseHouseHotelSequence(vector<int> positions) {
+	string stallyBoi = "r";
+	int position;
+	while (stallyBoi != "q") {
+		if (positions.size() == 0) {
+			cout << "You don't own any properties. Continuing to turn roll..." << endl;
+			return;
+		}
+		cout << endl << "To purchase a house, you must own all properties of a color. In addition, houses must be purchased evenly." << endl;
+		cout << "to purchase a hotel, you must own 4 houses on a property." << endl << endl;
+		cout << endl << "You own the following properties:" << endl << endl;
+		for (int i = 0; i < positions.size(); ++i) {
+			if (properties.find(positions.at(i)) != properties.end()) {
+				cout << properties[positions.at(i)].GetName() << "\t\tPosition: " << properties[positions.at(i)].GetPosition() << "\t\tColor: " << properties[positions.at(i)].GetColor() << endl;
+			}
+		}
+		cout << endl << "What property would you like to purchase a house on?" << endl;
+		//FIXME: Needs error checking
+		cin >> position;
+		if (ValidPosition(positions, position)) {
+			players.at(currentTurn).PurchaseHouse(properties[position]);
+		}
+		else {
+			cout << "You don't own that property!" << endl << endl;
+		}
+		cout << "Would you like to purchase another house/hotel? Press q to quit, anything else to continue purchasing: ";
+		cin >> stallyBoi;
+		cout << endl << endl;
+	}
+}
+
+bool GameLogic::ValidPosition(vector<int> positions, int position) {
+	bool isValid = false;
+	for (int i = 0; i < positions.size(); ++i) {
+		if (position == positions.at(i)) {
+			isValid = true;
+		}
+	}
+	return isValid;
 }
 
 void GameLogic::FillGameBoard() {
@@ -323,7 +368,7 @@ void GameLogic::FillGameBoard() {
 			gameProps >> mortgage;
 			gameProps >> houseCost;
 			gameProps >> hotelCost;
-			Property newProp = Property(name, color, cost, rentBase, rent1House, rent2House, rent3House, rent4House, rentHotel, mortgage, houseCost, hotelCost);
+			Property newProp = Property(name, color, cost, rentBase, rent1House, rent2House, rent3House, rent4House, rentHotel, mortgage, houseCost, hotelCost, index);
 			properties.insert({ index, newProp });
 		}
 		else if (propType == "Action") {

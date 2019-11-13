@@ -7,10 +7,10 @@
 using namespace std;
 
 Property::Property(string name, string color, int cost, int rentBase, int rentOneHouse, int rentTwoHouse,
-	int rentThreeHouse, int rentFourHouse, int rentHotel, int mortgage, int houseBuyCost, int hotelBuyCost) :
+	int rentThreeHouse, int rentFourHouse, int rentHotel, int mortgage, int houseBuyCost, int hotelBuyCost, int position) :
 	Tile(name, "Property"), propColor(color), propOwned(false), housesOnProp(0), 
-	mortgageValue(mortgage), houseCost(houseBuyCost), hotelCost(hotelBuyCost), hotelIsOwned(false),
-	propCost(cost), ownedByNum(0)
+	mortgageValue(mortgage), houseCost(houseBuyCost), hotelCost(hotelBuyCost), position(position), hotelIsOwned(false),
+	propCost(cost), ownedByNum(0), numHouses(0)
 {
 	rents.resize(6);
 	rents.at(0) = rentBase;
@@ -51,9 +51,30 @@ void Property::ReleaseProp() {
 	propOwned = false;
 }
 
+int Property::GetNumHouses() {
+	return numHouses;
+}
+
 //FIXME: Should use number of houses to decide how much rent. Use a map the maps <color, housesOwned>
 int Property::GetRent() {
-	return rents.at(0);
+	if (!hotelIsOwned) {
+		return rents.at(numHouses);
+	}
+	else {
+		return rents.at(5);
+	}
+}
+
+int Property::GetHouseCost() {
+	return houseCost;
+}
+
+void Property::AddHouse() {
+	numHouses++;
+}
+
+int Property::GetPosition() {
+	return position;
 }
 
 // textual based data representation that will be deleted if/when GUI is created

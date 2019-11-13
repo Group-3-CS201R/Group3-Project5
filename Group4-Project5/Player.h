@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <cmath>
+
+#include "Property.h"
 
 using namespace std;
 
@@ -17,8 +20,8 @@ public:
 	void MovePosition(int toMove);
 	int GetPosition();
 	bool IsInJail();
-	void AddToColorMap(string colorToAdd);
-	bool CanPurchaseHouse(string colorToPurchase);
+	void AddToColorMap(Property* property);
+	void PurchaseHouse(Property& property);
 	void PayRent(int toPay);
 	void CollectRent(int toCollect);
 	void PurchaseProperty(int propCost, int position);
@@ -47,6 +50,6 @@ private:
 	bool inJail;
 	int playerDoubles;
 	vector<int> propsOwned;
-	map<string, int> numOfColor;
+	map<string, vector<Property*>> colorMap;
 
 };

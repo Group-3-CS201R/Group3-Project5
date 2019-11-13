@@ -1,4 +1,6 @@
 ﻿  GameLogic.cpp
-C:\Users\gabri\Desktop\Group4-Project5\Group4-Project5\GameLogic.cpp(268,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\gabri\Desktop\Group4-Project5\Group4-Project5\GameLogic.cpp(282,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\gabri\Desktop\Group4-Project5\Group4-Project5\GameLogic.cpp(272,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\gabri\Desktop\Group4-Project5\Group4-Project5\GameLogic.cpp(286,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\gabri\Desktop\Group4-Project5\Group4-Project5\GameLogic.cpp(310,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\gabri\Desktop\Group4-Project5\Group4-Project5\GameLogic.cpp(332,20): warning C4018: '<': signed/unsigned mismatch
   Group4-Project5.vcxproj -> C:\Users\gabri\Desktop\Group4-Project5\Debug\Group4-Project5.exe

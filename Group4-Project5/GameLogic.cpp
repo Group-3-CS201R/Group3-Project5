@@ -82,14 +82,16 @@ void GameLogic::PlayGame() {
 		}
 		// this handles the case when the dice rolls do not have the same values
 		players.at(currentTurn).ResetDoubles();  // clears the consecutive roll count
-		currentTurn++;
-		if (currentTurn == players.size()) { // checks if the player sequence must be restarted
-			currentTurn = 0;
-		}
 		if (players.at(currentTurn).IsBankrupt()) { // checks if the player is bankrupt then executes a sequence free their properties to the bank erase them from the player vector
 			cout << endl << players.at(currentTurn).GetName() << " is bankrupt and is now out of the game. All property goes to the bank." << endl;
 			BankruptcyHandler(players.at(currentTurn).GetVect());
 			players.erase(players.begin() + currentTurn);
+		}
+		else {
+			currentTurn++;
+		}
+		if (currentTurn == players.size()) { // checks if the player sequence must be restarted
+			currentTurn = 0;
 		}
 		if (players.size() == 1) { // if only one player remains, they are the winner of the game and the game is complete
 			cout << endl << "Player: " << players.at(0).GetName() << " wins the game!" << endl;

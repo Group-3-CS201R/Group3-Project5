@@ -35,6 +35,7 @@ bool Railroad::PropIsOwned() {
 	return propOwned;
 }
 
+// Releases ownership variables. Used when player goes bankrupt
 void Railroad::ReleaseProp() {
 	ownedByNum = 0;
 	propOwned = false;

@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <fstream>
+#include <iomanip>
 
 #include "Dice.h"
 #include "Property.h"
@@ -17,17 +18,12 @@
 
 using namespace std;
 
-// Use map to show who owns what propert(0 - no one, 1 - player1, 2 - player2, -1 - not ownable)
-
 GameLogic::GameLogic() {
 	FillPlayersVect();
 	dice1 = Dice();
 	dice2 = Dice();
 	currentTurn = 0;
 	jailLocation = 10;
-	//FIXME: Use these two variables to track if a player has one game (numPlayers = (numBankrupt - 1))
-	numPlayers = 0;
-	numBankrupt = 0;
 	FillGameBoard();
 }
 
@@ -44,11 +40,11 @@ void GameLogic::PlayGame() {
 		cout << endl << "Player: " << (currentTurn + 1) << "\nPress p to print owned properties, h to purchase house/hotel, and anything else to roll. -> "; // stalls game until user is ready to roll
 		cin >> stallyBoi;
 		cin.ignore();
-		if (stallyBoi == "P" || stallyBoi == "p") {
+		if (stallyBoi == "P" || stallyBoi == "p") { // Displays the properties that are owned by the player whos' turn it currently is
 			PrintPropsOwned(players.at(currentTurn).GetVect());
 			continue;
 		}
-		else if (stallyBoi == "H" || stallyBoi == "h") {
+		else if (stallyBoi == "H" || stallyBoi == "h") { // Allows player whos' current turn it is to purchase a house or hotel on a property
 			PurchaseHouseHotelSequence(players.at(currentTurn).GetVect());
 		}
 		dice1.RollDice();
@@ -91,7 +87,7 @@ void GameLogic::PlayGame() {
 			players.erase(players.begin() + currentTurn);
 		}
 		else {
-			currentTurn++;
+			currentTurn++; // Makes it the next players turn
 		}
 		if (currentTurn == players.size()) { // checks if the player sequence must be restarted
 			currentTurn = 0;
@@ -119,7 +115,7 @@ void GameLogic::SequenceDecision(int position, int roll) {
 	}
 }
 
-
+// Executes when user lands on a railroad tile. If it is owned, the user pays rent. Otherwise, the user is offered the option to purchase the property
 void GameLogic::RailroadSequence(int position) {
 	int cost = railroads[position].GetCost();
 	string userResponse;
@@ -143,7 +139,7 @@ void GameLogic::RailroadSequence(int position) {
 		}
 		if (userResponse == "y" || userResponse == "Y") {
 			// checks that player has enough money to purchase the proerty in question
-			if (players.at(currentTurn).GetNetWorth() >= railroads[position].GetCost()) {
+			if (players.at(currentTurn).GetNetWorth() >= railroads[position].GetCost()) { // Checks that user has a high enough net worth to purchase the property
 				players.at(currentTurn).PurchaseProperty(railroads[position].GetCost(), position);
 				railroads[position].SetOwnedBy(currentTurn);
 			}
@@ -152,6 +148,7 @@ void GameLogic::RailroadSequence(int position) {
 	}
 }
 
+// Executes when user lands on a property tile. If it is owned, the user pays rent. Otherwise, the user is offered the option to purchase the property
 void GameLogic::PropertySequence(int position) {
 	int cost = properties[position].GetCost();
 	string userResponse;
@@ -173,7 +170,7 @@ void GameLogic::PropertySequence(int position) {
 		}
 		if (userResponse == "y" || userResponse == "Y") {
 			// checks that player has enough money to purchase the proerty in question
-			if (players.at(currentTurn).GetNetWorth() >= properties[position].GetCost()) {
+			if (players.at(currentTurn).GetNetWorth() >= properties[position].GetCost()) { // Checks that user has a high enough net worth to purchase the property
 				players.at(currentTurn).PurchaseProperty(properties[position].GetCost(), position);
 				properties[position].SetOwnedBy(currentTurn);
 				players.at(currentTurn).AddToColorMap(&properties[position]);
@@ -183,6 +180,7 @@ void GameLogic::PropertySequence(int position) {
 	}
 }
 
+// Executes when user lands on a utility tile. If it is owned, the user pays rent. Otherwise, the user is offered the option to purchase the property
 void GameLogic::UtilitySequence(int position, int roll) {
 	int cost = utilities[position].GetCost();
 	string userResponse;
@@ -204,7 +202,7 @@ void GameLogic::UtilitySequence(int position, int roll) {
 		}
 		if (userResponse == "y" || userResponse == "Y") {
 			// checks that player has enough money to purchase the proerty in question
-			if (players.at(currentTurn).GetNetWorth() >= utilities[position].GetCost()) {
+			if (players.at(currentTurn).GetNetWorth() >= utilities[position].GetCost()) { // Checks that user actually has the funds to purchase the property without going bankrupt
 				players.at(currentTurn).PurchaseProperty(utilities[position].GetCost(), position);
 				utilities[position].SetOwnedBy(currentTurn);
 				players.at(currentTurn).AddUtil();
@@ -214,6 +212,7 @@ void GameLogic::UtilitySequence(int position, int roll) {
 	}
 }
 
+// Prints the description of the Action tile that was landed on and then executes the proper action for that tile
 void GameLogic::ActionSequence(int position) {
 	actions[position].PrintDescription();
 	if (actions[position].GetName() == "GO_TO_JAIL") {
@@ -263,6 +262,7 @@ void GameLogic::JailSequence() {
 	}
 }
 
+// Prints all of the properties that the user owns
 void GameLogic::PrintPropsOwned(vector<int> positions) {
 	if (positions.size() == 0) {
 		cout << "You don't own any properties." << endl;
@@ -271,17 +271,18 @@ void GameLogic::PrintPropsOwned(vector<int> positions) {
 	cout << endl << "You own the following properties:" << endl << endl;
 	for (int i = 0; i < positions.size(); ++i) {
 		if (properties.find(positions.at(i)) != properties.end()) {
-			cout << properties[positions.at(i)].GetName() << "\tPosition: " << properties[positions.at(i)].GetPosition() <<  "\tColor: " << properties[positions.at(i)].GetColor() << "\t# houses: " << properties[positions.at(i)].GetNumHouses() << endl;
+			cout << properties[positions.at(i)].GetName() << setw(15) << "Position: " << properties[positions.at(i)].GetPosition() << setw(15) <<  "Color: " << properties[positions.at(i)].GetColor() << setw(15) <<"# houses: " << properties[positions.at(i)].GetNumHouses() << endl;
 		}
 		else if (railroads.find(positions.at(i)) != railroads.end()) {
-			cout << railroads[positions.at(i)].GetName() << "\t\tType: Railroad" << endl;
+			cout << railroads[positions.at(i)].GetName() << setw(15) << "Type: Railroad" << endl;
 		}
 		else if (utilities.find(positions.at(i)) != utilities.end()) {
-			cout << utilities[positions.at(i)].GetName() << "\t\tType: Utility" << endl;
+			cout << utilities[positions.at(i)].GetName() << setw(15) << "Type: Utility" << endl;
 		}
 	}
 }
 
+// When a player is bankrupt, this takes the positions that the user owns and sets their ownership to 0 and propOwned to false
 void GameLogic::BankruptcyHandler(vector<int> positions) {
 	for (int i = 1; i < positions.size(); ++i) {
 		if (properties.find(i) != properties.end()) {
@@ -300,7 +301,7 @@ void GameLogic::PurchaseHouseHotelSequence(vector<int> positions) {
 	string stallyBoi = "r";
 	int position;
 	while (stallyBoi != "q") {
-		if (positions.size() == 0) {
+		if (positions.size() == 0) { // Quick check to ensure that user actually owns properties to purchase houses on
 			cout << "You don't own any properties. Continuing to turn roll..." << endl;
 			return;
 		}
@@ -315,6 +316,13 @@ void GameLogic::PurchaseHouseHotelSequence(vector<int> positions) {
 		cout << endl << "What property would you like to purchase a house on?" << endl;
 		//FIXME: Needs error checking
 		cin >> position;
+		// Checks if user entered non-numeric value. If so, sequence restarts
+		if (cin.fail()) {
+			cout << endl << "That is not a valid position!" << endl;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			continue;
+		}
 		if (ValidPosition(positions, position)) {
 			players.at(currentTurn).PurchaseHouse(properties[position]);
 		}
@@ -322,13 +330,12 @@ void GameLogic::PurchaseHouseHotelSequence(vector<int> positions) {
 			cout << "You don't own that property!" << endl << endl;
 		}
 		cout << "Would you like to purchase another house/hotel? Press q to quit, anything else to continue purchasing: ";
-		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cin >> stallyBoi;
 		cout << endl << endl;
 	}
 }
 
+// Checks if the position that a player chose to build a house or hotel on is one of the positions that the player actually owns
 bool GameLogic::ValidPosition(vector<int> positions, int position) {
 	bool isValid = false;
 	for (int i = 0; i < positions.size(); ++i) {
@@ -339,6 +346,7 @@ bool GameLogic::ValidPosition(vector<int> positions, int position) {
 	return isValid;
 }
 
+// Reads in from from database of tile info and creates the game board from this information by filling the map corresponding to the tile type
 void GameLogic::FillGameBoard() {
 	ifstream gameProps("game_props.txt");
 	string propType;
@@ -357,6 +365,7 @@ void GameLogic::FillGameBoard() {
 	int index = 1;
 	while (!gameProps.eof()) {
  		gameProps >> propType;
+		// Property types need to have extra information like color and hotel rent in order to function fully
 		if (propType == "Property") {
 			gameProps >> name;
 			gameProps >> color;
@@ -373,11 +382,13 @@ void GameLogic::FillGameBoard() {
 			Property newProp = Property(name, color, cost, rentBase, rent1House, rent2House, rent3House, rent4House, rentHotel, mortgage, houseCost, hotelCost, index);
 			properties.insert({ index, newProp });
 		}
+		// Action tiles simply have a name and the index in the game boards that they are located at
 		else if (propType == "Action") {
 			gameProps >> name;
 			Action newAction = Action(name);
 			actions.insert({ index, newAction });
 		}
+		// Railroad tiles are similar to Property tiles, but don't have a color or a need for hotel rent
 		else if (propType == "Railroad") {
 			gameProps >> name;
 			gameProps >> cost;
@@ -389,6 +400,7 @@ void GameLogic::FillGameBoard() {
 			Railroad newRR = Railroad(name, cost, rent1House, rent2House, rent3House, rent4House, mortgage);
 			railroads.insert({ index, newRR });
 		}
+		// The final property type is a utility which doesn't have a predefined rent
 		else {
 			gameProps >> name;
 			gameProps >> cost;
@@ -401,17 +413,17 @@ void GameLogic::FillGameBoard() {
 	gameProps.close();
 }
 
+// This function asks for at least two players names' and as many as six players' names upon the opening of the program. This fills a vector of players in the game
 void GameLogic::FillPlayersVect() {
 	string userName;
 	string keepAdding;
 	cout << "Welcome to Monopoly!" << endl;
 	cout << "Enter at least two, and up to six, players' names to start playing the game." << endl << endl;
-	for (int i = 0; i < 6; ++i) {
+	for (int i = 0; i < 6; ++i) { // this limits the maximum number of users in the game to 6
 		cout << "Enter name of player #" << (i + 1) << " -> ";
 		getline(cin, userName);
 		players.push_back(Player(userName, (i + 1)));
-		numPlayers++;
-		if (i > 0) {
+		if (i > 0) { // This makes sure that at least two users have been entered before offering the option to start the game
 			cout << endl << "Would you like to add another player?\nPress y to add another player, any other key to start playing. -> ";
 			getline(cin, keepAdding);
 			if (keepAdding != "y" && keepAdding != "Y") {

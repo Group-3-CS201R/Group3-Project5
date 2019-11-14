@@ -46,6 +46,7 @@ void Property::SetOwnedBy(int player) {
 	propOwned = true;
 }
 
+// Releases prop ownership variables. Used when player goes bankrupt
 void Property::ReleaseProp() {
 	ownedByNum = 0;
 	propOwned = false;
@@ -55,7 +56,7 @@ int Property::GetNumHouses() {
 	return numHouses;
 }
 
-//FIXME: Should use number of houses to decide how much rent. Use a map the maps <color, housesOwned>
+// Uses number of houses to calculate the correct rent
 int Property::GetRent() {
 		return rents.at(numHouses);
 }

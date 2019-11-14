@@ -48,6 +48,4 @@ private:
 	map<int, Utility> utilities;
 	map<int, Action> actions;
 	int jailLocation;
-	int numPlayers;
-	int numBankrupt;
 };

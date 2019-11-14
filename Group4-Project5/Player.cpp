@@ -13,6 +13,7 @@ Player::Player() {}
 Player::Player(string name, int num) : playerName(name), playerNum(num), netWorth(1500), playerPosition(1),
 inJail(false), rollsInJail(0), numRailRoads(0), playerDoubles(0), numUtils(0)
 {
+	// Creates entries in the map that correspond with the properties owned by a player of each color
 	colorMap.insert({ "PINK", vector<Property*>()});
 	colorMap.insert({ "ORANGE", vector<Property*>() });
 	colorMap.insert({ "RED", vector<Property*>() });
@@ -84,10 +85,12 @@ string Player::GetColor() {
 	return playerColor;
 }
 
+// Gets the vector containing the positions of the properties owned
 vector<int> Player::GetVect() {
 	return propsOwned;
 }
 
+// Increments the number of utils owned by a player. Used to caluculate rent
 void Player::AddUtil() {
 	numUtils++;
 }
@@ -96,10 +99,12 @@ int Player::GetNumUtils() {
 	return numUtils;
 }
 
+// Increments the number of railroads owned by a user. Used to calculate rent
 void Player::AddRailroad() {
 	numRailRoads++;
 }
 
+// Adds pointer value to the color map
 void Player::AddToColorMap(Property* property) {
 	colorMap[property->GetColor()].push_back(property);
 }
@@ -112,6 +117,7 @@ void Player::SetPosition(int position) {
 	playerPosition = position;
 }
 
+// Offers user the ability to purchase a hotel if they own 4 houses on a property
 void Player::PurchaseHotel(Property& property) {
 	string userInp = "n";
 	while (true) {
@@ -119,8 +125,15 @@ void Player::PurchaseHotel(Property& property) {
 		cout << "Press y to purchase and n to not purchase." << endl;
 		getline(cin, userInp);
 		if (userInp == "y" || userInp == "Y") {
-			property.AddHouse();
-			break;
+			if (netWorth > property.GetHotelCost()) {
+				property.AddHouse();
+				netWorth -= property.GetHotelCost();
+				break;
+			}
+			else {
+				cout << "You do not have enough money to purchase this hotel!" << endl;
+				return;
+			}
 		}
 		else if (userInp == "n" || userInp == "N") {
 			break;
@@ -131,6 +144,7 @@ void Player::PurchaseHotel(Property& property) {
 	}
 }
 
+// Offers user the ability to purchase a house on a property if all of a color are owned
 void Player::PurchaseHouse(Property& property) {
 	if (property.GetNumHouses() == 5) {
 		cout << "You already own a hotel here. You can no longer build on this property." << endl << endl;
@@ -147,6 +161,7 @@ void Player::PurchaseHouse(Property& property) {
 	vector<Property*> colorProps = colorMap[color];
 	// Check if player owns the minimum needed properties to purchase house for the color
 	if ((color == "PINK" || color == "ORANGE" || color == "RED" || color == "YELLOW" || color == "GREEN" || color == "BLUE") && colorMap[color].size() == 3) {
+		// Creates comparison variables based off of what the passed property is
 		if (property.GetName() == colorProps.at(0)->GetName()) {
 			houseNum1 = colorProps.at(1)->GetNumHouses();
 			houseNum2 = colorProps.at(2)->GetNumHouses();
@@ -159,9 +174,9 @@ void Player::PurchaseHouse(Property& property) {
 			houseNum1 = colorProps.at(0)->GetNumHouses();
 			houseNum2 = colorProps.at(1)->GetNumHouses();
 		}
-		// Needs to check if the passed property has the ability to have a house purchased. Use the fact that properties must all be sigma = 1 of each other
+		// Checks that houses are being build evenly
 		if ((propNum == houseNum1 && propNum == houseNum2) || (abs((propNum + 1) - houseNum1) <= 1 && abs((propNum + 1) - houseNum2) <= 1)) {
-			if (netWorth < property.GetHouseCost()) {
+			if (netWorth < property.GetHouseCost()) { // checks that player has enough money to purchase the house
 				cout << "You don't have enough money to purchase this house!" << endl; 
 			}
 			else {
@@ -175,10 +190,14 @@ void Player::PurchaseHouse(Property& property) {
 	}
 	// Check if player owns the minimum needs properties to purchase house for the color
 	else if ((color == "NAVY" || color == "PURPLE" || color == "BROWN") && colorMap[color].size() == 2) {
-		houseNum1 = colorProps.at(0)->GetNumHouses();
-		houseNum2 = colorProps.at(1)->GetNumHouses();
-		// Needs to check if the passed property has the ability to have a house purchased. Use the fact that properties must all be sigma = 1 of each other
-		if ((abs(propNum - houseNum1) <= 1) && (abs(propNum - houseNum2) <= 1)) {
+		if (property.GetName() == colorProps.at(0)->GetName()) {
+			houseNum1 = colorProps.at(1)->GetNumHouses();
+		}
+		else {
+			houseNum1 = colorProps.at(0)->GetNumHouses();
+		}
+		// Checks if houses are being purchased evenly
+		if ( (propNum == houseNum1) || (abs((propNum + 1) - houseNum1) <= 1)) { // Checks if player has enough money to purchase the house
 			if (netWorth > property.GetHouseCost()) {
 				cout << "You don't have enough money to purchase this house!" << endl;
 			}
@@ -196,6 +215,7 @@ void Player::PurchaseHouse(Property& property) {
 	}
 }
 
+// Pays rent when an owned property is landed on
 void Player::PayRent(int toPay) {
 	if (netWorth >= toPay) {
 		netWorth -= toPay;
@@ -205,6 +225,7 @@ void Player::PayRent(int toPay) {
 	}
 }
 
+// Collects rent one of your properties is landed on by another player
 void Player::CollectRent(int toCollect) {
 	netWorth += toCollect;
 }

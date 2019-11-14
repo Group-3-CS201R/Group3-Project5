@@ -20,7 +20,6 @@ using namespace std;
 
 int main() {
 	GameLogic gameObject;
-
 	gameObject.PlayGame();
 
 	return 0;

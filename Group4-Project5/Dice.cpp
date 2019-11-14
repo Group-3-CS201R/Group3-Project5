@@ -17,6 +17,7 @@ int Dice::GetDiceValue() {
 	}
 }
 
+// Gets a dice roll between 1 and 6
 void Dice::RollDice() {
 	currRoll = rand() % 6 + 1;
 }

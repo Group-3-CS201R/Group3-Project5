@@ -26,12 +26,13 @@ bool Utility::PropIsOwned() {
 	return propOwned;
 }
 
+// Releases ownership variables. Used when player goes bankrupt
 void Utility::ReleaseProp() {
 	ownedByNum = 0;
 	propOwned = false;
 }
 
-//FIXME: Needs to return proper values for the rent
+// Calculates rent using the dice roll and the number of utilities to get this number
 int Utility::GetRent(int roll, int numUtils) {
 	if (numUtils == 1) {
 		return roll * 4;

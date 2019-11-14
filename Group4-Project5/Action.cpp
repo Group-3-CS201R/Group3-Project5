@@ -26,11 +26,11 @@ void Action::PrintDescription() {
 	}
 	else if (this->GetName() == "COMMUNITY_CHEST") {
 		cout << endl << this->GetName() << endl;
-		cout << endl << "Draw a Community Chest card and resolve its effect." << endl;
+		cout << endl << "The community chest is under investigation by the FCC. Check back later." << endl;
 	}
 	else if (this->GetName() == "CHANCE") {
 		cout << endl << this->GetName() << endl;
-		cout << endl << "Draw a Community Chest card and resolve its effect." << endl;
+		cout << endl << "You have to take chances every time you roll the dice, so you can take a break from worrying about chance for now." << endl;
 	}
 	else {
 		cout << this->GetName() << endl;

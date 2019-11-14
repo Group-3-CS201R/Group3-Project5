@@ -322,6 +322,8 @@ void GameLogic::PurchaseHouseHotelSequence(vector<int> positions) {
 			cout << "You don't own that property!" << endl << endl;
 		}
 		cout << "Would you like to purchase another house/hotel? Press q to quit, anything else to continue purchasing: ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cin >> stallyBoi;
 		cout << endl << endl;
 	}
